@@ -8,8 +8,8 @@ const IndexPage: NextPage = function () {
   const { signInWithGoogle, authUser } = useAuth();
   console.log(authUser);
   return (
-    <ServiceLayout title="jinkook">
-      <Box maxW="md" mx="auto">
+    <ServiceLayout title="jinkook" minH="100vh" backgroundColor="gray.50">
+      <Box maxW="md" mx="auto" pt={10}>
         <img src="/main_logo.svg" alt="메인 로고" />
         <Flex justify="center">
           <Heading>#Blah Blah</Heading>
