@@ -1,8 +1,14 @@
-import '../styles/globals.css'
-import type { AppProps /*, AppContext */ } from 'next/app'
+/* eslint-disable react/jsx-props-no-spreading */
+import { ChakraProvider } from '@chakra-ui/react';
+import '../styles/globals.css';
+import type { AppProps /*, AppContext */ } from 'next/app';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
+const MyApp = function ({ Component, pageProps }: AppProps) {
+  return (
+    <ChakraProvider>
+      <Component {...pageProps} />
+    </ChakraProvider>
+  );
+};
 
 export default MyApp;
