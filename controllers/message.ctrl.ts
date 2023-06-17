@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import MessageModel from '@/models/message/message.model';
+import MessageModel from '@/models/messages/message.model';
 import BadReqError from './error/bad_request_error';
 
 async function post(req: NextApiRequest, res: NextApiResponse) {

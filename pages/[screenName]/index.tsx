@@ -11,13 +11,47 @@ interface Props {
   userInfo: InAuthUser | null;
 }
 
-// const userInfo = {
-//   uid: 'jinkook',
-//   email: 'jinkook0126@naver.com',
-//   displayName: 'Lee Jinkook',
-//   photoURL: 'https://lh3.googleusercontent.com/a/AAcHTtcNrF2MNyFVxnWaFyyBmMmSh4BAqzd6nvPq6Bu_RQ=s96-c',
-// };
-
+async function postMessage({
+  uid,
+  message,
+  author,
+}: {
+  uid: string;
+  message: string;
+  author?: {
+    displayName: string;
+    photoUrl?: string;
+  };
+}) {
+  if (message.length <= 0) {
+    return {
+      result: false,
+      message: '메시지를 입력해주세요.',
+    };
+  }
+  try {
+    await fetch('/api/messages.add', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid,
+        message,
+        author,
+      }),
+    });
+    return {
+      result: true,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      result: false,
+      message: '메시지 등록 실패 ',
+    };
+  }
+}
 const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const [message, setMessage] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
@@ -27,7 +61,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
     return <p>사용자를 찾을 수 없습니다.</p>;
   }
   return (
-    <ServiceLayout title="love eunji" minH="100vh" backgroundColor="gray.50">
+    <ServiceLayout title={`${userInfo.displayName}의 홈`} minH="100vh" backgroundColor="gray.50">
       <Box maxW="md" mx="auto" pt={6}>
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" mb={2} bg="white">
           <Flex p={6}>
@@ -75,6 +109,30 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               colorScheme="yellow"
               variant="solid"
               size="sm"
+              onClick={async () => {
+                const postData: {
+                  uid: string;
+                  message: string;
+                  author?: {
+                    displayName: string;
+                    photoURL: string;
+                  };
+                } = {
+                  uid: userInfo.uid,
+                  message,
+                };
+                if (isAnonymous === false) {
+                  postData.author = {
+                    displayName: authUser?.displayName ?? 'anonymous',
+                    photoURL: authUser?.photoURL ?? 'https://bit.ly/broken-link',
+                  };
+                }
+                const messageResp = await postMessage(postData);
+                if (messageResp.result === false) {
+                  toast({ title: '메시지 등록 실패', position: 'top-right' });
+                }
+                setMessage('');
+              }}
             >
               등록
             </Button>
