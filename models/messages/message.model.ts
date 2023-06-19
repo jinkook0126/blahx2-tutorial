@@ -69,9 +69,30 @@ async function list({ uid }: { uid: string }) {
   });
   return listData;
 }
+
+async function postReply({ uid, messageId, reply }: { uid: string; messageId: string; reply: string }) {
+  const memberRef = Firestore.collection(MEMBER_COL).doc(uid);
+  const messageRef = Firestore.collection(MEMBER_COL).doc(uid).collection(MSG_COL).doc(messageId);
+  await Firestore.runTransaction(async (transaction) => {
+    const memberDoc = await transaction.get(memberRef);
+    const messageDoc = await transaction.get(messageRef);
+    if (memberDoc.exists === false) {
+      throw new CustomServerError({ statusCode: 400, message: '존재하지 않은 사용자입니다.' });
+    }
+    if (messageDoc.exists === false) {
+      throw new CustomServerError({ statusCode: 400, message: '존재하지 않은 문서' });
+    }
+    const messageData = memberDoc.data() as inMessageServer;
+    if (messageData.reply !== undefined) {
+      throw new CustomServerError({ statusCode: 400, message: '이미 댓글을 입력했습니다.' });
+    }
+    await transaction.update(messageRef, { reply, replayAt: firestore.FieldValue.serverTimestamp() });
+  });
+}
 const MessageModel = {
   post,
   list,
+  postReply,
 };
 
 export default MessageModel;
