@@ -9,7 +9,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method } = req;
   const supportMethod = ['GET'];
   try {
-    console.log(1);
     checkSupportMethod(supportMethod, method);
     await MessageCtrl.get(req, res);
   } catch (e) {
