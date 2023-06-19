@@ -86,7 +86,7 @@ async function postReply({ uid, messageId, reply }: { uid: string; messageId: st
     if (messageData.reply !== undefined) {
       throw new CustomServerError({ statusCode: 400, message: '이미 댓글을 입력했습니다.' });
     }
-    await transaction.update(messageRef, { reply, replayAt: firestore.FieldValue.serverTimestamp() });
+    await transaction.update(messageRef, { reply, replyAt: firestore.FieldValue.serverTimestamp() });
   });
 }
 const MessageModel = {
