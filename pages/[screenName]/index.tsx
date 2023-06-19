@@ -84,6 +84,25 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
       console.error(err);
     }
   }
+  async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
+    try {
+      const resp = await fetch(`/api/messages.info?uid=${uid}&messageId=${messageId}`);
+      if (resp.status === 200) {
+        const data: InMessage = await resp.json();
+        setMessageList((prev) => {
+          const findIndex = prev.findIndex((fv) => fv.id === data.id);
+          if (findIndex >= 0) {
+            const updateArr = [...prev];
+            updateArr[findIndex] = data;
+            return updateArr;
+          }
+          return prev;
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
   useEffect(() => {
     if (userInfo === null) return;
     fetchMessageList(userInfo.uid);
@@ -165,6 +184,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
                   toast({ title: '메시지 등록 실패', position: 'top-right' });
                 }
                 setMessage('');
+                setMessageListFetchTrigger((prev) => !prev);
               }}
             >
               등록
@@ -200,8 +220,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
               photoUrl={userInfo.photoURL ?? 'https://bit.ly/broken-linkhttps://bit.ly/broken-link'}
               isOwner={isOwner}
               onSendComplete={() => {
-                setMessageListFetchTrigger((prev) => !prev);
-                console.info();
+                fetchMessageInfo({ uid: userInfo.uid, messageId: messageData.id });
               }}
             />
           ))}
