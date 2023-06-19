@@ -12,10 +12,9 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { TriangleDownIcon } from '@chakra-ui/icons';
 import { GetServerSideProps, NextPage } from 'next';
 import ResizeTextArea from 'react-textarea-autosize';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios, { AxiosResponse } from 'axios';
 import { useQuery } from 'react-query';
 import { ServiceLayout } from '@/components/service_layout';
@@ -78,24 +77,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
   const [messageListFetchTrigger, setMessageListFetchTrigger] = useState(false);
   const toast = useToast();
   const { authUser } = useAuth();
-  // async function fetchMessageList(uid: string) {
-  //   try {
-  //     const resp = await fetch(`/api/messages.list?uid=${uid}&page=${page}&size=5`);
-  //     if (resp.status === 200) {
-  //       const data: {
-  //         totalElements: number;
-  //         totalPages: number;
-  //         page: number;
-  //         size: number;
-  //         content: InMessage[];
-  //       } = await resp.json();
-  //       setTotalPage(data.totalPages);
-  //       setMessageList((prev) => [...prev, ...data.content]);
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
+
   async function fetchMessageInfo({ uid, messageId }: { uid: string; messageId: string }) {
     try {
       const resp = await fetch(`/api/messages.info?uid=${uid}&messageId=${messageId}`);
@@ -139,10 +121,6 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
       },
     },
   );
-  // useEffect(() => {
-  //   if (userInfo === null) return;
-  //   fetchMessageList(userInfo.uid);
-  // }, [userInfo, messageListFetchTrigger, page]);
 
   if (userInfo === null) {
     return <p>사용자를 찾을 수 없습니다.</p>;
@@ -269,7 +247,6 @@ const UserHomePage: NextPage<Props> = function ({ userInfo }) {
             width="full"
             mt={2}
             fontSize="sm"
-            // leftIcon={<TriangleDownIcon />}
             onClick={() => {
               setPage((p) => p + 1);
             }}
