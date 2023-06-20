@@ -149,7 +149,7 @@ const UserHomePage: NextPage<Props> = function ({ userInfo, screenName }) {
             <Textarea
               bg="gray.100"
               border="none"
-              placeholder="무엇이 궁금한가요?"
+              placeholder="무엇이 궁금한가요?!"
               resize="none"
               minH="unset"
               overflow="hidden"
